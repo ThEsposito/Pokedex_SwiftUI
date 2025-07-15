@@ -1,0 +1,37 @@
+// Arquivo responsável por fazer o "network code". Ou seja, pegar as informações
+// da API pela rede (com protocolo HTTP) e encaixar nos modelos criados no arquivo
+// Pokemon.swift
+
+// URL base da API: https://pokeapi.co/api/v2/pokemon/
+
+// Coloco isso tudo dentro de uma classe Pokemon?
+// Implemento outras classes para os sprites, abilities e tipagens com getters como
+// esses?
+
+func getPokemon(id: Int) async throws -> Pokemon { 
+    let endpoint = "https://pokeapi.co/api/v2/pokemon/\(id)"
+
+    guard let url = URL(string: endpoint) else { throw PokeError.invalidURL }
+
+    let (data, response) = try await URLSession.shared.data(from: URL)
+
+    guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+        throw PokeError.invalidResponse
+    }
+
+    do {
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase 
+        return try decoder.decode(Pokemon.self, from: data)
+    } catch {
+        throw PokeError.invalidData
+    }
+
+}
+
+enum PokeError: Error { // Segue o protocolo error
+    case invalidURL
+    case invalidResponse
+    case invalidData // 90% das vezes q der pau aqui, é por causa de algum 
+    // erro no nome dos atributos
+}

@@ -1,0 +1,46 @@
+struct PokemonV2: Codable
+
+ - Codable é um protocolo. Quer dizer que a classe/estrutura é
+    - Decodable: Dá pra transformar de Json para Swift Model (GET)
+    - Encodable:Dá pra transfrmar de Swift para Json (quando queremos POSTar)
+
+Alguns atributos do Json (com + de 1 palavra) vem no padrão Snake Case, que não é
+boa prática em Swift. Tem um método que traduz pro camelCase e põe no atributo com o 
+nome ajustado
+
+
+func getPokemon async throws -> Pokemon { *bloco* }
+
+ - Async: use an async way (api sem autenticação?? N entendi)
+ - Throws: permite lançar erros (que serão listados num enum)
+
+
+let (data, response) = try await URLSession.shared.data(from: URL)
+ 
+ - (data, responte): a função usada retorna os dados (Data, Optional) e a 
+    response(Response, Optional).
+ - try (pra tratar erros)
+ - await: Swift Concurrency Async Await (não entendi???)
+ - URL: passamos um OBJETO da classe URL. Transmorfamos uma 
+        urlString em objeto URL com o comando:
+            url = URL(string: endpoint)
+        Obs: retorna um Optional (URL!). Use um guard let ou if let.
+
+guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {}
+
+ - Não entendi o "as?"
+ - HTTPURLResponse deve ser a Classe da response.
+ - statusCode é um atributo autoexplicativo. statuc == 200 indica q deu tudo certo
+
+
+do {
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase 
+        return try decoder.decode(Pokemon.self, from: data)
+    } catch  { *erro* }
+
+ - Primeiro, instancia-se o objeto decoder. Ele é responsável por fazer a decodificação
+   de JSON -> Objeto (da classe/struct Pokemon).
+ - Depois, altera-se o atrib keyDecodingStrategy para converter de snake_case (para 
+   CamelCase).
+ - Por fim, tenta "decodificar" o JSON. Se der pau, retorna um erro da enum que criamos.
