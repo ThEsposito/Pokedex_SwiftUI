@@ -31,5 +31,5 @@ Seguiu-se o formato:
 */
 
 /*
-Ele também mostrou como exibe as imagens em formato de URL 
+Ele também mostrou como exibe as imagens vindas em formato de URL (que a API disponibiliza) 
 */
